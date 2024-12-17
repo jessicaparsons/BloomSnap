@@ -10,11 +10,12 @@ import CoreML
 import Vision
 import Alamofire
 import SwiftyJSON
+import SDWebImage
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var imageView: UIImageView!
-    
+    @IBOutlet weak var excerpt: UILabel!
     
     var wikiManager = WikiManager()
     
@@ -37,7 +38,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         if let userPickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
             
-            imageView.image = userPickedImage
+            //imageView.image = userPickedImage
             
             guard let convertedCIImage = CIImage(image: userPickedImage) else {
                 fatalError("Could not convert into CIImage")
@@ -100,6 +101,14 @@ extension ViewController: WikiManagerDelegate {
         //set the UI using data.whatever
         
         DispatchQueue.main.async {
+            
+            self.excerpt.text = data.description
+            
+            if let flowerImage = data.thumbnailURL {
+                //use SDWebImage to be able to set the URL
+                self.imageView.sd_setImage(with: URL(string: flowerImage))
+            }
+            
             
         }
         

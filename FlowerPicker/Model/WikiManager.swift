@@ -14,12 +14,13 @@ protocol WikiManagerDelegate {
 struct WikiManager {
     
     
-    let wikipediaURl = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&indexpageids"
+    let wikipediaURL = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|pageimages&exintro&explaintext&redirects=1&indexpageids&pithumbsize=300"
+
     
     var delegate: WikiManagerDelegate?
     
     func fetchResults(flowerName: String) {
-        let urlString = "\(wikipediaURl)&titles=\(flowerName)"
+        let urlString = "\(wikipediaURL)&titles=\(flowerName)"
         
         //pass the URL to our performRequest function
         performRequest(urlString: urlString)
@@ -43,9 +44,11 @@ struct WikiManager {
                 
                 if let safeData = data {
                     if let wiki = parseJSON(wikiData: safeData) {
+                        
+                        // get the data back to the app
                         self.delegate?.didUpdateWiki(data: wiki)
                     }
-                    // get the data back to the app
+                    
                     
                 }
             }
@@ -72,9 +75,10 @@ struct WikiManager {
                     //Encode our data back in to our app
                     let description = page.extract
                     let title = page.title
+                    let thumbnailURL = page.thumbnail.source
                     
                     //create an object from the struct we made, return it
-                    let parsedData = ParsedData(description: description, title: title)
+                    let parsedData = ParsedData(description: description, title: title, thumbnailURL: thumbnailURL)
                     return parsedData
                     
                 }

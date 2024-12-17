@@ -20,4 +20,11 @@ struct Details: Codable {
     let pageid: Int
     let title: String
     let extract: String
+    let thumbnail: Thumbnail
+}
+
+struct Thumbnail: Codable {
+    let source: String
+    let width: Int
+    let height: Int
 }

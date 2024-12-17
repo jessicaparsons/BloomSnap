@@ -11,5 +11,6 @@ struct ParsedData {
     
     let description: String?
     let title: String?
+    let thumbnailURL: String?
     
 }
