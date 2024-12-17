@@ -18,6 +18,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     var wikiManager = WikiManager()
     
+    let wikipediaURL = "https://en.wikipedia.org/w/api.php"
+
     let imagePicker = UIImagePickerController()
     
     
@@ -67,8 +69,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             if let flowerName = classification?.identifier {
                 self.navigationItem.title = flowerName.capitalized
                 
-                //give the flower name to our WikiManager so we can grab its description
-                self.wikiManager.fetchResults(flowerName: flowerName)
+                //give the flower name to Alamofire so we can grab its description
+                self.requestInfo(flowerName: flowerName)
             }
         }
         
@@ -83,6 +85,32 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
     }
 
+    
+    func requestInfo(flowerName: String) {
+        
+        let parameters : [String:String] = [
+          "format" : "json",
+          "action" : "query",
+          "prop" : "extracts",
+          "exintro" : "",
+          "explaintext" : "",
+          "titles" : flowerName,
+          "indexpageids" : "",
+          "redirects" : "1",
+          ]
+        
+        AF.request(wikipediaURL, method: .get, parameters: parameters).response { (response) in
+            
+            switch response.result {
+                case .success:
+                    print("got the info")
+                case .failure:
+                print("didnt get the info")
+            }
+            
+        }
+    }
+    
     
     @IBAction func cameraButton(_ sender: UIBarButtonItem) {
         
